@@ -1,0 +1,1099 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PM REPORT (ASSET DETAILS)</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root {
+  --accent:#0b63a8;
+  --accent-dark:#084f85;
+  --muted:#6b7280;
+  --bg:#f3f6f9;
+  --card:#ffffff;
+  --border:#0b63a8;
+  --radius:12px;
+}
+
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Inter",sans-serif;background:linear-gradient(180deg,#f7fbff 0%,var(--bg) 100%);color:#0b1b2b;}
+
+header{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(90deg,var(--accent),var(--accent-dark));
+  padding:16px 24px;
+  color:#fff;
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:0 6px 18px rgba(11,99,168,0.15);
+  gap:20px;
+}
+header .title{font-size:22px;font-weight:700;text-align:center;flex:1;}
+header .signout-btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#fff;color:var(--accent);border:none;border-radius:6px;
+  padding:8px 16px;font-weight:700;cursor:pointer;
+  transition:all .3s ease;
+}
+header .signout-btn i{font-size:16px;}
+header .signout-btn:hover{
+  background:linear-gradient(90deg,var(--accent-dark),var(--accent));
+  color:#fff;box-shadow:0 0 12px rgba(11,99,168,0.6);transform:translateY(-2px);
+}
+
+.wrap{max-width:1180px;margin:28px auto;padding:0 18px 80px;}
+
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+  padding:20px;
+  margin-bottom:20px;
+  transition:transform .15s ease, box-shadow .3s ease;
+}
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 24px rgba(0,0,0,0.15);
+}
+
+legend{
+  font-weight:700;
+  font-size:16px;
+  padding:6px 12px;
+  color:#fff;
+  border-radius:6px;
+  background:linear-gradient(90deg,var(--accent),var(--accent-dark));
+  margin-bottom:12px;
+  display:inline-block;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:12px;
+}
+label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:6px;}
+
+input[type="text"], input[type="date"], select, textarea, input[type="file"]{
+  width:100%;
+  padding:10px 14px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  font-size:14px;
+  background:#fff;
+  color:#0b1b2b;
+  box-shadow:0 2px 6px rgba(11,99,168,0.15);
+  transition: all 0.4s ease;
+}
+
+/* ensure OTHER manual input appears below the select and fits the same width */
+.other-manual {
+  margin-top:8px;
+  display:block;
+}
+
+/* hide/show helper */
+.hidden{display:none !important;}
+
+input:focus, select:focus, textarea:focus{
+  outline:none;
+  border:1px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+  box-shadow: 0 0 12px rgba(11,99,168,0.4);
+  border-radius:8px;
+}
+
+textarea{min-height:84px;resize:vertical;}
+.span-2{grid-column:1 / -1;}
+.card-footer{display:flex;justify-content:flex-end;margin-top:12px;gap:10px;}
+.btn{padding:9px 14px;border-radius:8px;border:none;font-weight:700;cursor:pointer;}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 8px 26px rgba(11,99,168,0.08);}
+.btn-primary:hover{background:var(--accent-dark);transform:translateY(-2px);}
+.sigs{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;}
+.sig{flex:1;min-width:200px;border:1.5px dashed var(--border);border-radius:8px;padding:12px;background:linear-gradient(180deg,#fbfdff,#ffffff);text-align:center;font-weight:700;color:#223;min-height:120px;}
+.sig small{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-top:8px;}
+
+/* small signature area labels and controls */
+.sig-canvas { width:100%; height:120px; border:1px solid #cbd5e1; border-radius:6px; background:#fff; touch-action: none; }
+
+/* Preview modal */
+.preview-overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center; z-index:9999;
+}
+.preview-card{
+  width:95%; max-width:900px; max-height:90vh; overflow:auto; background:#fff; border-radius:12px; padding:18px; box-shadow:0 20px 60px rgba(0,0,0,0.4);
+}
+
+/* preview content styling (keeps it clean for printing) */
+.preview-content h2{margin:6px 0 14px 0; font-size:18px; text-align:center;}
+.preview-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:12px;}
+.preview-row{display:flex; gap:8px; margin-bottom:6px;}
+.preview-label{font-weight:700; color:#333; width:160px;}
+.preview-value{flex:1;}
+
+/* print-specific rules for preview print window will be applied in the print HTML */
+@media print{
+  header,.btn{display:none !important;}
+  body{background:#fff;}
+  .card{box-shadow:none;border:none;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title">PM REPORT (ASSET DETAILS)</div>
+  <button class="signout-btn" onclick="window.location.href='login.html'">
+    <i class="fas fa-sign-out-alt"></i> Sign Out
+  </button>
+</header>
+
+<main class="wrap">
+
+  <!-- Informational note -->
+  <div class="card">
+    <strong>Note:</strong> Fill details in sequence.
+  </div>
+
+  <!-- MONITOR DETAILS -->
+  <fieldset class="card" id="monitorSection" data-section-index="0">
+    <legend>MONITOR DETAILS</legend>
+    <div class="form-grid">
+      <div><label>MONITOR ASSET ID NO</label><input id="monAssetId" type="text" class="upcase"></div>
+
+      <div>
+        <label>MAKE</label>
+        <select class="other-trigger upcase" data-target="monMakeOther" id="monMake">
+          <option value="">--select--</option>
+          <option>DELL</option><option>HP</option><option>ACER</option><option>LENOVO</option><option>HCL</option>
+          <option>SAMSUNG</option><option>ZEBION</option><option>LG</option><option>VIEWSONIC</option>
+          <option>FRONTECH</option><option>WIPRO</option><option>ZEBRONICS</option><option>IBALL</option>
+          <option>CONSISTENT</option><option>ASUS</option><option>AOC</option><option>MSI</option><option>BENQ</option>
+          <option>PHILIPS</option><option>ENTER</option><option>GIGABYTE</option><option>VOLTRIQ</option><option>OTHER</option>
+        </select>
+        <input type="text" id="monMakeOther" class="other-manual hidden upcase" placeholder="ENTER MAKE MANUALLY">
+      </div>
+
+      <div>
+        <label>INCHES</label>
+        <select class="other-trigger upcase" data-target="monInchesOther" id="monInches">
+          <option value="">--select--</option>
+          <option>17"</option><option>18"</option><option>18.5"</option><option>19"</option>
+          <option>20"</option><option>22"</option><option>22.5"</option><option>27"</option>
+          <option>OTHER</option>
+        </select>
+        <input type="text" id="monInchesOther" class="other-manual hidden upcase" placeholder="ENTER INCHES MANUALLY">
+      </div>
+
+      <div><label>MODEL NO</label><input id="monModel" type="text" class="upcase"></div>
+      <div><label>SERIAL NUMBER</label><input id="monSerial" type="text" class="upcase"></div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" type="button" onclick="resetSection('monitorSection')">Reset</button>
+    </div>
+  </fieldset>
+
+  <!-- CPU -->
+  <fieldset class="card" id="cpuSection" data-section-index="1">
+    <legend>CPU DETAILS</legend>
+    <div class="form-grid">
+      <div><label>CPU ASSET ID NO</label><input id="cpuAssetId" type="text" class="upcase"></div>
+      <div><label>MAKE</label><input id="cpuMake" type="text" class="upcase"></div>
+      <div><label>MODEL NO</label><input id="cpuModel" type="text" class="upcase"></div>
+      <div><label>SERIAL NUMBER</label><input id="cpuSerial" type="text" class="upcase"></div>
+      <div><label>PROCESSOR</label><input id="cpuProcessor" type="text" class="upcase"></div>
+      <div><label>MOTHERBOARD-MAKE</label><input id="cpuMbMake" type="text" class="upcase"></div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" type="button" onclick="resetSection('cpuSection')">Reset</button>
+    </div>
+  </fieldset>
+
+  <!-- SMPS -->
+  <fieldset class="card" id="smpsSection" data-section-index="2">
+    <legend>SMPS DETAILS</legend>
+    <div class="form-grid">
+      <div>
+        <label>MAKE</label>
+        <select class="other-trigger upcase" data-target="smpsMakeOther" id="smpsMake">
+          <option value="">--select--</option>
+          <option>ZEBRONICS</option><option>IBALL</option><option>INTEX</option><option>HP</option>
+          <option>DELL</option><option>FRONTECH</option><option>LIVE TECH</option><option>ARTIS</option><option>OTHER</option>
+        </select>
+        <input type="text" id="smpsMakeOther" class="other-manual hidden upcase" placeholder="ENTER MAKE MANUALLY">
+      </div>
+      <div><label>MODEL</label><input id="smpsModel" type="text" class="upcase"></div>
+      <div><label>SERIAL NUMBER</label><input id="smpsSerial" type="text" class="upcase"></div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" type="button" onclick="resetSection('smpsSection')">Reset</button>
+    </div>
+  </fieldset>
+
+  <!-- RAM -->
+  <fieldset class="card" id="ramSection" data-section-index="3">
+    <legend>RAM DETAILS</legend>
+    <div class="form-grid">
+      <div>
+        <label>MAKE</label>
+        <select class="other-trigger upcase" data-target="ramMakeOther" id="ramMake">
+          <option value="">--select--</option>
+          <option>HYNEX</option><option>EVM</option><option>AARVEX</option><option>SAMSUNG</option><option>KINGSTON</option>
+          <option>ZEBRONICS</option><option>FRONTECH</option><option>IBALL</option><option>CONSISTENT</option>
+          <option>CRUCIAL</option><option>ADATA</option><option>OTHER</option>
+        </select>
+        <input type="text" id="ramMakeOther" class="other-manual hidden upcase" placeholder="ENTER MAKE MANUALLY">
+      </div>
+
+      <div>
+        <label>CAPACITY</label>
+        <select class="other-trigger upcase" data-target="ramCapacityOther" id="ramCapacity">
+          <option value="">--select--</option>
+          <option>2 GB</option><option>4 GB</option><option>8 GB</option><option>16 GB</option>
+          <option>2 GB + 2 GB</option><option>4 GB + 4 GB</option><option>8 GB + 8 GB</option><option>16 GB + 16 GB</option>
+          <option>OTHER</option>
+        </select>
+        <input type="text" id="ramCapacityOther" class="other-manual hidden upcase" placeholder="ENTER CAPACITY MANUALLY">
+      </div>
+
+      <div>
+        <label>MODEL NO</label>
+        <select class="other-trigger upcase" data-target="ramModelOther" id="ramModel">
+          <option value="">--select--</option>
+          <option>DDR-2</option><option>DDR-3</option><option>DDR-4</option><option>DDR-5</option>
+          <option>OTHER</option>
+        </select>
+        <input type="text" id="ramModelOther" class="other-manual hidden upcase" placeholder="ENTER MODEL NO MANUALLY">
+      </div>
+
+      <div><label>SERIAL NUMBER</label><input id="ramSerial" type="text" class="upcase"></div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" type="button" onclick="resetSection('ramSection')">Reset</button>
+    </div>
+  </fieldset>
+
+  <!-- HDD -->
+  <fieldset class="card" id="hddSection" data-section-index="4">
+    <legend>HDD DETAILS</legend>
+    <div class="form-grid">
+      <div>
+        <label>MAKE</label>
+        <select class="other-trigger upcase" data-target="hddMakeOther" id="hddMake">
+          <option value="">--select--</option>
+          <option>SEAGATE</option><option>WESTERN DIGITAL (WD)</option><option>TOSHIBA</option><option>MAXTOR</option>
+          <option>CONSISTENT</option><option>FRONTECH</option><option>SAMSUNG</option><option>OTHER</option>
+        </select>
+        <input type="text" id="hddMakeOther" class="other-manual hidden upcase" placeholder="ENTER MAKE MANUALLY">
+      </div>
+
+      <div>
+        <label>STORAGE CAPACITY</label>
+        <select class="other-trigger upcase" data-target="hddStorageOther" id="hddStorage">
+          <option value="">--select--</option>
+          <option>160 GB</option><option>320 GB</option><option>500 GB</option><option>1 TB</option><option>OTHER</option>
+        </select>
+        <input type="text" id="hddStorageOther" class="other-manual hidden upcase" placeholder="ENTER STORAGE CAPACITY MANUALLY">
+      </div>
+
+      <div><label>MODEL NO</label><input id="hddModel" type="text" class="upcase"></div>
+      <div><label>SERIAL NUMBER</label><input id="hddSerial" type="text" class="upcase"></div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" type="button" onclick="resetSection('hddSection')">Reset</button>
+    </div>
+  </fieldset>
+
+  <!-- KEYBOARD -->
+  <fieldset class="card" id="keyboardSection" data-section-index="5">
+    <legend>KEYBOARD DETAILS</legend>
+    <div class="form-grid">
+      <div>
+        <label>MAKE</label>
+        <select class="other-trigger upcase" data-target="kbMakeOther" id="kbMake">
+          <option value="">--select--</option>
+          <option>DELL</option><option>HP</option><option>LENOVO</option><option>TVS ELECTRONICS</option>
+          <option>ZEBRONICS</option><option>IBALL</option><option>PRODOT</option><option>FRONTECH</option>
+          <option>LOGITECH</option><option>AMKETTE</option><option>LAPCARE</option><option>OTHER</option>
+          <option>ENTER</option><option>QUANTUM</option><option>PORTRONICS</option><option>RAZER</option><option>MICROSOFT</option>
+          <option>ASUS</option><option>CORSAIR</option>
+        </select>
+        <input type="text" id="kbMakeOther" class="other-manual hidden upcase" placeholder="ENTER MAKE MANUALLY">
+      </div>
+      <div><label>MODEL NO</label><input id="kbModel" type="text" class="upcase"></div>
+      <div><label>SERIAL NUMBER</label><input id="kbSerial" type="text" class="upcase"></div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" type="button" onclick="resetSection('keyboardSection')">Reset</button>
+    </div>
+  </fieldset>
+
+  <!-- MOUSE -->
+  <fieldset class="card" id="mouseSection" data-section-index="6">
+    <legend>MOUSE DETAILS</legend>
+    <div class="form-grid">
+      <div>
+        <label>MAKE</label>
+        <select class="other-trigger upcase" data-target="mouseMakeOther" id="mouseMake">
+          <option value="">--select--</option>
+          <option>ZEBRONICS</option><option>FRONTECH</option><option>PORTRONICS</option><option>AMKETTE</option>
+          <option>TVS ELECTRONICS</option><option>IBALL</option><option>COSMIC BYTE</option><option>REDGEAR</option>
+          <option>LOGITECH</option><option>HP</option><option>DELL</option><option>LENOVO</option><option>RAZER</option>
+          <option>CORSAIR</option><option>ASUS</option><option>MICROSOFT</option><option>PRODOT</option><option>OTHER</option>
+        </select>
+        <input type="text" id="mouseMakeOther" class="other-manual hidden upcase" placeholder="ENTER MAKE MANUALLY">
+      </div>
+      <div><label>MODEL NO</label><input id="mouseModel" type="text" class="upcase"></div>
+      <div><label>SERIAL NUMBER</label><input id="mouseSerial" type="text" class="upcase"></div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" type="button" onclick="resetSection('mouseSection')">Reset</button>
+    </div>
+  </fieldset>
+
+  <!-- PRINTER -->
+  <fieldset class="card" id="printerSection" data-section-index="7">
+    <legend>PRINTER DETAILS</legend>
+    <div class="form-grid">
+      <div><label>PRINTER ASSET ID NO</label><input id="printerAssetId" type="text" class="upcase"></div>
+      <div>
+        <label>MAKE</label>
+        <select class="other-trigger upcase" data-target="printerMakeOther" id="printerMake">
+          <option value="">--select--</option>
+          <option>CANON</option><option>HP</option><option>TVS ELECTRONICS</option><option>XEROX</option><option>EPSON</option>
+          <option>BROTHER</option><option>RICOH</option><option>SAMSUNG</option><option>WEWIN</option><option>LIPI</option>
+          <option>SIDSEL</option><option>ANDSONS</option><option>ORPHICARD</option><option>KYOCERA</option><option>LEXMARK</option><option>OTHER</option>
+        </select>
+        <input type="text" id="printerMakeOther" class="other-manual hidden upcase" placeholder="ENTER MAKE MANUALLY">
+      </div>
+      <div><label>MODEL NO</label><input id="printerModel" type="text" class="upcase"></div>
+      <div><label>SERIAL NUMBER</label><input id="printerSerial" type="text" class="upcase"></div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" type="button" onclick="resetSection('printerSection')">Reset</button>
+    </div>
+  </fieldset>
+
+  <!-- SCANNER -->
+  <fieldset class="card" id="scannerSection" data-section-index="8">
+    <legend>SCANNER DETAILS</legend>
+    <div class="form-grid">
+      <div><label>SCANNER ASSET ID NO</label><input id="scannerAssetId" type="text" class="upcase"></div>
+      <div>
+        <label>MAKE</label>
+        <select class="other-trigger upcase" data-target="scannerMakeOther" id="scannerMake">
+          <option value="">--select--</option>
+          <option>CANON</option><option>BROTHER</option><option>HP</option><option>TVS ELECTRONICS</option><option>EPSON</option>
+          <option>LIPI</option><option>WEWIN</option><option>FUJITSU</option><option>PLUSTEK</option><option>KODAK ALARIS</option><option>OTHER</option>
+        </select>
+        <input type="text" id="scannerMakeOther" class="other-manual hidden upcase" placeholder="ENTER MAKE MANUALLY">
+      </div>
+      <div><label>MODEL NO</label><input id="scannerModel" type="text" class="upcase"></div>
+      <div><label>SERIAL NUMBER</label><input id="scannerSerial" type="text" class="upcase"></div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" type="button" onclick="resetSection('scannerSection')">Reset</button>
+    </div>
+  </fieldset>
+
+  <!-- UPS -->
+  <fieldset class="card" id="upsSection" data-section-index="9">
+    <legend>UPS DETAILS</legend>
+    <div class="form-grid">
+      <div>
+        <label>MAKE</label>
+        <select class="other-trigger upcase" data-target="upsMakeOther" id="upsMake">
+          <option value="">--select--</option>
+          <option>APC</option><option>V-GUARD</option><option>MICROTEK</option><option>OTHER</option>
+        </select>
+        <input type="text" id="upsMakeOther" class="other-manual hidden upcase" placeholder="ENTER MAKE MANUALLY">
+      </div>
+      <div><label>MODEL NO</label><input id="upsModel" type="text" class="upcase"></div>
+      <div><label>SERIAL NUMBER</label><input id="upsSerial" type="text" class="upcase"></div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" type="button" onclick="resetSection('upsSection')">Reset</button>
+    </div>
+  </fieldset>
+
+  <!-- USER REMARKS -->
+  <fieldset class="card" id="userRemarksSection" data-section-index="10">
+    <legend>USER REMARKS</legend>
+    <label>COMMENT</label>
+    <textarea id="userRemarks" class="upcase"></textarea>
+  </fieldset>
+
+  <!-- ENGINEER REMARKS -->
+  <fieldset class="card" id="engineerRemarksSection" data-section-index="11">
+    <legend>ENGINEER REMARKS</legend>
+    <label>COMMENT</label>
+    <textarea id="engineerRemarks" class="upcase"></textarea>
+  </fieldset>
+
+  <!-- Signature boxes for Field Engineer & User Acknowledgement -->
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr; gap:18px; align-items:start;">
+      <!-- Field Engineer -->
+      <div>
+        <div class="sig">
+          <div style="font-weight:800; margin-bottom:6px;">Field Engineer</div>
+          <div style="font-size:13px; color:var(--muted); margin-bottom:8px;">Name & Signature</div>
+          <input id="engName" type="text" class="upcase" placeholder="ENTER NAME (FIELD ENGINEER)" style="margin-bottom:8px;">
+          <canvas id="engSigCanvas" class="sig-canvas"></canvas>
+          <div style="display:flex;gap:8px; margin-top:8px; justify-content:flex-end;">
+            <button class="btn" type="button" id="engClear">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Acknowledgement -->
+      <div>
+        <div class="sig">
+          <div style="font-weight:800; margin-bottom:6px;">User Acknowledgement</div>
+          <div style="font-size:13px; color:var(--muted); margin-bottom:8px;">Name & Signature</div>
+          <input id="userName" type="text" class="upcase" placeholder="ENTER NAME (USER)" style="margin-bottom:8px;">
+          <canvas id="userSigCanvas" class="sig-canvas"></canvas>
+          <div style="display:flex;gap:8px; margin-top:8px; justify-content:flex-end;">
+            <button class="btn" type="button" id="userClear">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview & Print buttons (Option A: end of form) -->
+  <div style="display:flex; gap:12px; justify-content:flex-end; margin-bottom:40px;">
+    <button class="btn btn-primary" id="previewBtn" type="button"><i class="fas fa-eye"></i> Preview</button>
+    <button class="btn btn-primary" id="printBtn" type="button"><i class="fas fa-print"></i> Print</button>
+  </div>
+
+</main>
+
+<!-- Preview modal (hidden by default) -->
+<div id="previewOverlay" class="preview-overlay hidden" aria-hidden="true">
+  <div class="preview-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <h3 style="margin:0;">PM REPORT PREVIEW</h3>
+      <div>
+        <button class="btn" id="closePreview">Close</button>
+        <button class="btn btn-primary" id="printFromPreview">Print</button>
+      </div>
+    </div>
+
+    <div id="previewContent" class="preview-content" style="font-family:Inter, sans-serif; color:#0b1b2b;">
+      <!-- JS will fill preview content here -->
+      <h2>PM REPORT (ASSET DETAILS)</h2>
+      <div id="previewSections"></div>
+      <hr style="margin:12px 0;">
+      <div style="display:flex; gap:20px;">
+        <div style="flex:1; text-align:center;">
+          <div style="font-weight:800;">Field Engineer</div>
+          <div id="previewEngName" style="margin:8px 0;"></div>
+          <div id="previewEngSig"></div>
+        </div>
+        <div style="flex:1; text-align:center;">
+          <div style="font-weight:800;">User Acknowledgement</div>
+          <div id="previewUserName" style="margin:8px 0;"></div>
+          <div id="previewUserSig"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Utilities */
+const $ = id => document.getElementById(id);
+
+/* Section order and sequence logic */
+const sectionOrder = [
+  'monitorSection','cpuSection','smpsSection','ramSection','hddSection',
+  'keyboardSection','mouseSection','printerSection','scannerSection','upsSection',
+  'userRemarksSection','engineerRemarksSection'
+];
+
+let unlockedIndex = 0;
+
+/* Helper: get section index for a focused element */
+function getSectionIndexByElement(el) {
+  const fieldset = el.closest('fieldset');
+  if (!fieldset) return -1;
+  return parseInt(fieldset.dataset.sectionIndex ?? sectionOrder.indexOf(fieldset.id));
+}
+
+/* Check if a given section is fully complete */
+function isSectionComplete(sectionId) {
+  const sec = document.getElementById(sectionId);
+  if (!sec) return false;
+  const controls = Array.from(sec.querySelectorAll('input[type="text"], select, textarea'));
+  for (const el of controls) {
+    if (el.classList.contains('other-manual') && el.classList.contains('hidden')) continue;
+    if (el.tagName.toLowerCase() === 'select') {
+      if (!el.value || el.value.trim() === '') return false;
+      if (el.value === 'OTHER') {
+        const targetId = el.dataset.target;
+        if (!targetId) return false;
+        const manual = document.getElementById(targetId);
+        if (!manual) return false;
+        if (!manual.value || manual.value.trim() === '') return false;
+      }
+      continue;
+    }
+    if (el.tagName.toLowerCase() === 'input' || el.tagName.toLowerCase() === 'textarea') {
+      if (!el.value || el.value.trim() === '') return false;
+    }
+  }
+  return true;
+}
+
+/* Focus first empty field in a section */
+function focusFirstEmptyField(sectionId) {
+  const sec = document.getElementById(sectionId);
+  if (!sec) return;
+  const controls = Array.from(sec.querySelectorAll('input[type="text"], select, textarea'));
+  for (const el of controls) {
+    if (el.classList.contains('other-manual') && el.classList.contains('hidden')) continue;
+    if (el.tagName.toLowerCase() === 'select') {
+      if (!el.value || el.value.trim() === '') { el.focus(); return; }
+      if (el.value === 'OTHER') {
+        const manual = document.getElementById(el.dataset.target);
+        if (manual && (!manual.value || manual.value.trim() === '')) { manual.focus(); return; }
+      }
+      continue;
+    }
+    if (!el.value || el.value.trim() === '') { el.focus(); return; }
+  }
+}
+
+/* Update unlocked index by checking sections sequentially */
+function updateUnlockedIndex() {
+  for (let i = unlockedIndex; i < sectionOrder.length; i++) {
+    if (isSectionComplete(sectionOrder[i])) unlockedIndex = i + 1;
+    else break;
+  }
+}
+
+/* Reset section */
+function resetSection(sectionId) {
+  const sec = document.getElementById(sectionId);
+  if (!sec) return;
+  const elements = sec.querySelectorAll("input, select, textarea");
+  elements.forEach(el => {
+    if (el.type === "file") el.value = null;
+    else el.value = "";
+    if (el.classList.contains('other-manual')) el.classList.add('hidden');
+  });
+  sec.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
+  // recalc unlockedIndex
+  unlockedIndex = 0;
+  for (let i=0;i<sectionOrder.length;i++){
+    if (!isSectionComplete(sectionOrder[i])) { unlockedIndex = i; break; }
+    if (i===sectionOrder.length-1) unlockedIndex = sectionOrder.length;
+  }
+}
+
+/* OTHER selects: show manual input below when "OTHER" selected */
+document.querySelectorAll(".other-trigger").forEach(select => {
+  select.addEventListener("change", function() {
+    const targetId = this.dataset.target;
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    if (this.value === "OTHER") {
+      target.classList.remove('hidden');
+      target.focus();
+    } else {
+      target.classList.add('hidden');
+      target.value = '';
+    }
+    updateUnlockedIndex();
+  });
+});
+
+/* Auto-uppercase all text inputs and textareas (including manual OTHERs) */
+function toUpperHandler(e) {
+  const el = e.target;
+  const start = el.selectionStart;
+  const end = el.selectionEnd;
+  el.value = el.value.toUpperCase();
+  try { el.setSelectionRange(start, end); } catch (err) {}
+}
+document.addEventListener('input', function(e){
+  const t = e.target;
+  if (!t) return;
+  if ((t.tagName.toLowerCase() === 'input' && t.type === 'text') || t.tagName.toLowerCase() === 'textarea') {
+    toUpperHandler(e);
+  }
+});
+
+/* Block focusing later sections until previous are complete */
+document.addEventListener('focusin', function(e){
+  const el = e.target;
+  const secIndex = getSectionIndexByElement(el);
+  if (secIndex === -1) return;
+  if (secIndex > unlockedIndex) {
+    const requiredSectionId = sectionOrder[unlockedIndex];
+    const reqName = document.getElementById(requiredSectionId)?.querySelector('legend')?.innerText || 'previous section';
+    alert(`Please fill the form in sequence. Complete ${reqName} first.`);
+    focusFirstEmptyField(requiredSectionId);
+    e.preventDefault();
+    return;
+  }
+  if (secIndex === unlockedIndex) {
+    for (let i=0;i<secIndex;i++){
+      if (!isSectionComplete(sectionOrder[i])) {
+        const reqName = document.getElementById(sectionOrder[i])?.querySelector('legend')?.innerText || 'previous section';
+        alert(`Please complete ${reqName} first.`);
+        focusFirstEmptyField(sectionOrder[i]);
+        e.preventDefault();
+        return;
+      }
+    }
+  }
+});
+
+/* Update unlocked index on any change */
+document.addEventListener('change', function(e){
+  updateUnlockedIndex();
+});
+
+/* Initialize unlockedIndex */
+updateUnlockedIndex();
+
+/* Signature pads (simple canvas drawing) */
+function createSignaturePad(canvasEl) {
+  const ctx = canvasEl.getContext('2d');
+  let drawing = false;
+  let lastX = 0, lastY = 0;
+
+  function resizeCanvas() {
+    // preserve drawing by scaling
+    const data = canvasEl.toDataURL();
+    canvasEl.width = canvasEl.clientWidth * devicePixelRatio;
+    canvasEl.height = canvasEl.clientHeight * devicePixelRatio;
+    canvasEl.style.width = canvasEl.clientWidth + 'px';
+    canvasEl.style.height = canvasEl.clientHeight + 'px';
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+    // restore (best-effort)
+    const img = new Image();
+    img.onload = () => ctx.drawImage(img, 0, 0, canvasEl.clientWidth, canvasEl.clientHeight);
+    img.src = data;
+  }
+
+  function startDraw(x,y){
+    drawing = true;
+    lastX = x; lastY = y;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+  }
+  function drawLine(x,y){
+    if (!drawing) return;
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#111';
+    ctx.lineTo(x,y);
+    ctx.stroke();
+    lastX = x; lastY = y;
+  }
+  function endDraw(){
+    drawing = false;
+    ctx.closePath();
+  }
+
+  // mouse
+  canvasEl.addEventListener('mousedown', (ev) => {
+    ev.preventDefault();
+    const r = canvasEl.getBoundingClientRect();
+    startDraw(ev.clientX - r.left, ev.clientY - r.top);
+  });
+  canvasEl.addEventListener('mousemove', (ev) => {
+    const r = canvasEl.getBoundingClientRect();
+    drawLine(ev.clientX - r.left, ev.clientY - r.top);
+  });
+  canvasEl.addEventListener('mouseup', endDraw);
+  canvasEl.addEventListener('mouseout', endDraw);
+
+  // touch
+  canvasEl.addEventListener('touchstart', (ev) => {
+    ev.preventDefault();
+    const touch = ev.touches[0];
+    const r = canvasEl.getBoundingClientRect();
+    startDraw(touch.clientX - r.left, touch.clientY - r.top);
+  }, {passive:false});
+  canvasEl.addEventListener('touchmove', (ev) => {
+    ev.preventDefault();
+    const touch = ev.touches[0];
+    const r = canvasEl.getBoundingClientRect();
+    drawLine(touch.clientX - r.left, touch.clientY - r.top);
+  }, {passive:false});
+  canvasEl.addEventListener('touchend', endDraw);
+
+  // clear function
+  function clear() {
+    const r = canvasEl.getContext('2d');
+    r.clearRect(0,0,canvasEl.width,canvasEl.height);
+  }
+
+  // init size
+  resizeCanvas();
+  // handle resizing
+  window.addEventListener('resize', () => resizeCanvas());
+
+  return {
+    getDataURL: () => canvasEl.toDataURL(),
+    clear
+  };
+}
+
+/* instantiate signature pads */
+const engPad = createSignaturePad($('engSigCanvas'));
+const userPad = createSignaturePad($('userSigCanvas'));
+
+$('engClear').addEventListener('click', () => engPad.clear());
+$('userClear').addEventListener('click', () => userPad.clear());
+
+/* Build preview HTML from form values */
+function collectFormData() {
+  // helper: get value or manual-other
+  function valueOrManual(selectOrInput) {
+    if (!selectOrInput) return '';
+    if (selectOrInput.tagName.toLowerCase() === 'select') {
+      if (!selectOrInput.value) return '';
+      if (selectOrInput.value === 'OTHER') {
+        const manual = document.getElementById(selectOrInput.dataset.target);
+        return manual ? (manual.value || '') : '';
+      }
+      return selectOrInput.value;
+    }
+    return selectOrInput.value || '';
+  }
+
+  return {
+    monitor: {
+      assetId: $('monAssetId').value || '',
+      make: valueOrManual($('monMake')),
+      inches: valueOrManual($('monInches')),
+      model: $('monModel').value || '',
+      serial: $('monSerial').value || ''
+    },
+    cpu: {
+      assetId: $('cpuAssetId').value || '',
+      make: $('cpuMake').value || '',
+      model: $('cpuModel').value || '',
+      serial: $('cpuSerial').value || '',
+      processor: $('cpuProcessor').value || '',
+      mbMake: $('cpuMbMake').value || ''
+    },
+    smps: {
+      make: valueOrManual($('smpsMake')),
+      model: $('smpsModel').value || '',
+      serial: $('smpsSerial').value || ''
+    },
+    ram: {
+      make: valueOrManual($('ramMake')),
+      capacity: valueOrManual($('ramCapacity')),
+      model: valueOrManual($('ramModel')),
+      serial: $('ramSerial').value || ''
+    },
+    hdd: {
+      make: valueOrManual($('hddMake')),
+      storage: valueOrManual($('hddStorage')),
+      model: $('hddModel').value || '',
+      serial: $('hddSerial').value || ''
+    },
+    keyboard: {
+      make: valueOrManual($('kbMake')),
+      model: $('kbModel').value || '',
+      serial: $('kbSerial').value || ''
+    },
+    mouse: {
+      make: valueOrManual($('mouseMake')),
+      model: $('mouseModel').value || '',
+      serial: $('mouseSerial').value || ''
+    },
+    printer: {
+      assetId: $('printerAssetId').value || '',
+      make: valueOrManual($('printerMake')),
+      model: $('printerModel').value || '',
+      serial: $('printerSerial').value || ''
+    },
+    scanner: {
+      assetId: $('scannerAssetId').value || '',
+      make: valueOrManual($('scannerMake')),
+      model: $('scannerModel').value || '',
+      serial: $('scannerSerial').value || ''
+    },
+    ups: {
+      make: valueOrManual($('upsMake')),
+      model: $('upsModel').value || '',
+      serial: $('upsSerial').value || ''
+    },
+    userRemarks: $('userRemarks').value || '',
+    engineerRemarks: $('engineerRemarks').value || '',
+    engineerName: $('engName').value || '',
+    userName: $('userName').value || '',
+    engineerSig: engPad.getDataURL(),
+    userSig: userPad.getDataURL()
+  };
+}
+
+/* Validate sequence before preview/print: ensure sections up to last are complete */
+function validateBeforePreviewOrPrint() {
+  // ensure that all sections up to the first incomplete one are filled in order
+  for (let i=0;i<sectionOrder.length;i++){
+    if (!isSectionComplete(sectionOrder[i])) {
+      // focus that section's first empty field and alert
+      const reqName = document.getElementById(sectionOrder[i])?.querySelector('legend')?.innerText || 'previous section';
+      alert(`Please complete ${reqName} before previewing/printing.`);
+      focusFirstEmptyField(sectionOrder[i]);
+      return false;
+    }
+  }
+  // also require engineer/user names and signatures (since they want on PDF)
+  if (!$('engName').value || !$('engSigCanvas').toDataURL) {
+    if (!$('engName').value) { alert('Please enter Field Engineer name.'); $('engName').focus(); return false; }
+  }
+  if (!$('userName').value) { alert('Please enter User name.'); $('userName').focus(); return false; }
+  // verify signature canvases have content by sampling dataURL - compare to blank canvas pattern
+  // Quick check: ensure dataURL not blank (very light check)
+  const blankEng = createBlankDataURL($('engSigCanvas'));
+  const blankUser = createBlankDataURL($('userSigCanvas'));
+  const engData = engPad.getDataURL();
+  const userData = userPad.getDataURL();
+  if (engData === blankEng) { alert('Please provide Field Engineer signature.'); return false; }
+  if (userData === blankUser) { alert('Please provide User signature.'); return false; }
+  return true;
+}
+
+/* Create a blank dataURL with current canvas size to compare (helper) */
+function createBlankDataURL(canvasEl) {
+  const tmp = document.createElement('canvas');
+  tmp.width = canvasEl.width;
+  tmp.height = canvasEl.height;
+  return tmp.toDataURL();
+}
+
+/* Build preview DOM */
+function buildPreview() {
+  const data = collectFormData();
+  const container = $('previewSections');
+  container.innerHTML = ''; // clear
+
+  // create a helper to append label/value pairs
+  function appendSection(title, obj) {
+    const secWrap = document.createElement('div');
+    secWrap.style.marginBottom = '10px';
+    const h = document.createElement('h4');
+    h.style.margin = '6px 0';
+    h.style.fontSize = '14px';
+    h.style.color = '#0b1b2b';
+    h.textContent = title;
+    secWrap.appendChild(h);
+
+    const grid = document.createElement('div');
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(2,1fr)';
+    grid.style.gap = '8px';
+
+    for (const key in obj) {
+      const val = obj[key] || '';
+      const row = document.createElement('div');
+      row.className = 'preview-row';
+      const lab = document.createElement('div');
+      lab.className = 'preview-label';
+      lab.textContent = formatKey(key);
+      const valDiv = document.createElement('div');
+      valDiv.className = 'preview-value';
+      valDiv.textContent = val;
+      row.appendChild(lab);
+      row.appendChild(valDiv);
+      grid.appendChild(row);
+    }
+    secWrap.appendChild(grid);
+    container.appendChild(secWrap);
+  }
+
+  appendSection('MONITOR DETAILS', data.monitor);
+  appendSection('CPU DETAILS', data.cpu);
+  appendSection('SMPS DETAILS', data.smps);
+  appendSection('RAM DETAILS', data.ram);
+  appendSection('HDD DETAILS', data.hdd);
+  appendSection('KEYBOARD DETAILS', data.keyboard);
+  appendSection('MOUSE DETAILS', data.mouse);
+  appendSection('PRINTER DETAILS', data.printer);
+  appendSection('SCANNER DETAILS', data.scanner);
+  appendSection('UPS DETAILS', data.ups);
+
+  // remarks
+  const remarksWrap = document.createElement('div');
+  remarksWrap.style.marginTop = '6px';
+  const r1 = document.createElement('div'); r1.style.marginBottom='6px';
+  r1.innerHTML = `<strong>USER REMARKS:</strong><div>${data.userRemarks}</div>`;
+  const r2 = document.createElement('div'); r2.style.marginBottom='6px';
+  r2.innerHTML = `<strong>ENGINEER REMARKS:</strong><div>${data.engineerRemarks}</div>`;
+  container.appendChild(remarksWrap);
+  container.appendChild(r1);
+  container.appendChild(r2);
+
+  // signatures
+  $('previewEngName').textContent = data.engineerName;
+  $('previewUserName').textContent = data.userName;
+
+  // embed signature images
+  $('previewEngSig').innerHTML = `<img src="${data.engineerSig}" alt="Engineer signature" style="max-width:100%; height:auto; border:1px solid #ddd; padding:6px; background:#fff;">`;
+  $('previewUserSig').innerHTML = `<img src="${data.userSig}" alt="User signature" style="max-width:100%; height:auto; border:1px solid #ddd; padding:6px; background:#fff;">`;
+}
+
+/* format key names to readable labels */
+function formatKey(k){
+  return k.replace(/([A-Z])/g, ' $1').replace(/_/g,' ').toUpperCase();
+}
+
+/* Preview open/close */
+$('previewBtn').addEventListener('click', function(){
+  // validate sequence and required data first
+  if (!validateBeforePreviewOrPrint()) return;
+  buildPreview();
+  $('previewOverlay').classList.remove('hidden');
+  $('previewOverlay').setAttribute('aria-hidden','false');
+});
+
+$('closePreview').addEventListener('click', function(){
+  $('previewOverlay').classList.add('hidden');
+  $('previewOverlay').setAttribute('aria-hidden','true');
+});
+
+/* Print: open a new window with print-ready HTML (A4 CSS) */
+function openPrintWindow() {
+  if (!validateBeforePreviewOrPrint()) return;
+  const data = collectFormData();
+  const printHtml = generatePrintHtml(data);
+  const w = window.open('', '_blank');
+  if (!w) { alert('Pop-up blocked. Allow pop-ups for this site to print.'); return; }
+  w.document.open();
+  w.document.write(printHtml);
+  w.document.close();
+  // Wait a bit to let images load, then print
+  w.onload = function(){
+    setTimeout(()=>{ w.print(); }, 400);
+  };
+}
+
+$('printBtn').addEventListener('click', openPrintWindow);
+$('printFromPreview').addEventListener('click', openPrintWindow);
+
+/* generate a full HTML page for printing sized A4 */
+function generatePrintHtml(data) {
+  // sanitize values by escaping
+  function esc(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+  // inline CSS for print
+  const css = `
+  <style>
+    @page { size: A4; margin: 20mm; }
+    body{font-family:Inter, sans-serif; color:#0b1b2b; margin:0; padding:0;}
+    h1{font-size:18px; text-align:center; margin-bottom:6px;}
+    .section{margin-bottom:10px;}
+    .row{display:flex; gap:6px; margin-bottom:6px;}
+    .lab{width:160px; font-weight:700;}
+    .val{flex:1; border-bottom:1px dashed #ccc; padding-left:6px;}
+    .signwrap{display:flex; gap:24px; margin-top:12px;}
+    .sig-img{border:1px solid #ddd; padding:6px; background:#fff;}
+  </style>
+  `;
+  // build sections
+  function sectionHtml(title, obj){
+    let s = `<div class="section"><h3 style="margin:6px 0;">${esc(title)}</h3>`;
+    for (const k in obj){
+      s += `<div class="row"><div class="lab">${esc(formatKey(k))}</div><div class="val">${esc(obj[k])}</div></div>`;
+    }
+    s += `</div>`;
+    return s;
+  }
+
+  const sections = 
+    sectionHtml('MONITOR DETAILS', data.monitor) +
+    sectionHtml('CPU DETAILS', data.cpu) +
+    sectionHtml('SMPS DETAILS', data.smps) +
+    sectionHtml('RAM DETAILS', data.ram) +
+    sectionHtml('HDD DETAILS', data.hdd) +
+    sectionHtml('KEYBOARD DETAILS', data.keyboard) +
+    sectionHtml('MOUSE DETAILS', data.mouse) +
+    sectionHtml('PRINTER DETAILS', data.printer) +
+    sectionHtml('SCANNER DETAILS', data.scanner) +
+    sectionHtml('UPS DETAILS', data.ups) +
+    `<div class="section"><h3>USER REMARKS</h3><div>${esc(data.userRemarks)}</div></div>` +
+    `<div class="section"><h3>ENGINEER REMARKS</h3><div>${esc(data.engineerRemarks)}</div></div>`;
+
+  // signatures
+  const sigs = `
+    <div class="section">
+      <div class="signwrap">
+        <div style="flex:1;">
+          <div style="font-weight:800;">FIELD ENGINEER</div>
+          <div style="margin:6px 0;">${esc(data.engineerName)}</div>
+          <div><img class="sig-img" src="${data.engineerSig}" alt="Engineer signature" style="max-width:100%; height:auto;"></div>
+        </div>
+        <div style="flex:1;">
+          <div style="font-weight:800;">USER ACKNOWLEDGEMENT</div>
+          <div style="margin:6px 0;">${esc(data.userName)}</div>
+          <div><img class="sig-img" src="${data.userSig}" alt="User signature" style="max-width:100%; height:auto;"></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  return `
+    <html><head><meta charset="utf-8"><title>Print - PM REPORT</title>${css}</head>
+    <body>
+      <h1>PM REPORT (ASSET DETAILS)</h1>
+      <div style="max-width:760px; margin:0 auto;">${sections}${sigs}</div>
+    </body></html>
+  `;
+}
+
+/* print validation uses same sequence rules */
+function validateBeforePreviewOrPrint() {
+  for (let i=0;i<sectionOrder.length;i++){
+    if (!isSectionComplete(sectionOrder[i])) {
+      const reqName = document.getElementById(sectionOrder[i])?.querySelector('legend')?.innerText || 'previous section';
+      alert(`Please complete ${reqName} before previewing/printing.`);
+      focusFirstEmptyField(sectionOrder[i]);
+      return false;
+    }
+  }
+  // names
+  if (!$('engName').value) { alert('Please enter Field Engineer name.'); $('engName').focus(); return false; }
+  if (!$('userName').value) { alert('Please enter User name.'); $('userName').focus(); return false; }
+
+  // signature non-empty check by comparing to blank canvas
+  const blankEng = createBlankDataURL($('engSigCanvas'));
+  const blankUser = createBlankDataURL($('userSigCanvas'));
+  if (engPad.getDataURL() === blankEng) { alert('Please provide Field Engineer signature.'); return false; }
+  if (userPad.getDataURL() === blankUser) { alert('Please provide User signature.'); return false; }
+
+  return true;
+}
+
+/* helper: generate blank dataURL for canvas */
+function createBlankDataURL(canvasEl) {
+  try {
+    const tmp = document.createElement('canvas');
+    tmp.width = canvasEl.width;
+    tmp.height = canvasEl.height;
+    return tmp.toDataURL();
+  } catch (err) { return ''; }
+}
+</script>
+
+</body>
+</html>
